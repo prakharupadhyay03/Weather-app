@@ -32,19 +32,19 @@ const Weather = () => {
     }
 
     const search = async (city) => {
-        if(city === ""){
+        if (city === "") {
             alert("Enter City Name");
             return;
         }
         try {
             console.log("KEY:", import.meta.env.VITE_APP_ID);
-            
+
             const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${import.meta.env.VITE_APP_ID}`;
 
             const response = await fetch(url);
             const data = await response.json();
 
-            if(!response.ok){
+            if (!response.ok) {
                 alert(data.message);
                 return;
             }
@@ -60,8 +60,8 @@ const Weather = () => {
             })
 
         } catch (error) {
-          setWeatherData(false);
-          console.error("Error in fetching weather data");
+            setWeatherData(false);
+            console.error("Error in fetching weather data");
         }
     }
 
@@ -72,35 +72,46 @@ const Weather = () => {
     return (
         <div className="weather">
             <div className="search-bar">
-                <input ref={inputRef} type="text" placeholder='Search' />
-                <img src={search_icon} alt="" onClick={()=>search(inputRef.current.value)}/>
-            </div>
-            {weatherData?<>
-
-            <img src={weatherData.icon} alt="" className='weather-icon' />
-            <p className='temperature'>{weatherData.temperature}°c</p>
-            <p className='location'>{weatherData.location}</p>
-            <div className='weather-data'>
-                <div className='col'>
-                    <img src={humidity_icon} alt="" />
-                    <div>
-                        <p>{weatherData.humidity} %</p>
-                        <span>Humidity</span>
-                    </div>
+                <input
+                    ref={inputRef}
+                    type="text"
+                    placeholder='Search for a city...'
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                            search(inputRef.current.value);
+                        }
+                    }}
+                />
+                <div className="search-icon-wrapper" onClick={() => search(inputRef.current.value)}>
+                    <img src={search_icon} alt="Search" />
                 </div>
-
-                <div className='col'>
-                    <img src={wind_icon} alt="" />
-                    <div>
-                        <p>{weatherData.windSpeed} km/h</p>
-                        <span>Wind Speed</span>
-                    </div>
-                </div>
-
             </div>
-            </>:<></>}
+            {weatherData ? <>
 
-            
+                <img src={weatherData.icon} alt="" className='weather-icon' />
+                <p className='temperature'>{weatherData.temperature}°c</p>
+                <p className='location'>{weatherData.location}</p>
+                <div className='weather-data'>
+                    <div className='col'>
+                        <img src={humidity_icon} alt="" />
+                        <div>
+                            <p>{weatherData.humidity} %</p>
+                            <span>Humidity</span>
+                        </div>
+                    </div>
+
+                    <div className='col'>
+                        <img src={wind_icon} alt="" />
+                        <div>
+                            <p>{weatherData.windSpeed} km/h</p>
+                            <span>Wind Speed</span>
+                        </div>
+                    </div>
+
+                </div>
+            </> : <></>}
+
+
         </div>
     )
 }
